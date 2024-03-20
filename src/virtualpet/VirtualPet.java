@@ -24,7 +24,7 @@ public class VirtualPet {
         System.out.println("///_.-' _..--.'_    \\                    `( ) ) // //");
         System.out.println("/ (_..-' // (< _     ;_..__               ; `' / ///");
         System.out.println(" / // // //  `-._,_)' // / ``--...____..-' /// / //");
-        System.out.println("\nVirtual Pet Simulator");
+        System.out.println("\nComputerized Companions");
         
         //Part 1: print menu
         System.out.println("\nMenu:");
