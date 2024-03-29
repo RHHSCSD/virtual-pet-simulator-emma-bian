@@ -25,10 +25,14 @@ public class VirtualPet {
         final int NAME_LENGTH = (r.nextInt(5)+4);
         final String VOWELS = "aeiou";
         final String CONSONANTS = "bcdfghjklmnpqrstvwxyz";
+        final int STARTING_POOL = 20;
         
         //Variable initialization
         boolean chosenPet = false;
         String petName = "";
+        boolean namedPet = false;
+        int maxHealth, maxFood, maxEnergy;
+        int remainingPool;
         
         //Part 1: print splash screen
         System.out.println("           __..--''``---....___   _..._    __");
@@ -87,14 +91,46 @@ public class VirtualPet {
                 int startLetterIden = r.nextInt(2); //statring with consonant or vowel
                 for (int i=0;i<NAME_LENGTH;i+=2) {
                     if (startLetterIden == 0) {
-                        petName += "" + VOWELS.charAt(r.nextInt(5)) + CONSONANTS.charAt(r.nextInt(21));
+                        petName += "" + VOWELS.charAt(r.nextInt(5));
+                        if (r.nextInt(2)==0) {
+                            petName += "" + petName.charAt(petName.length()-1); //adding double letters
+                        i++;
+                        }
+                        petName += "" + CONSONANTS.charAt(r.nextInt(21));
+                        if (r.nextInt(2)==0) {
+                            petName += "" + petName.charAt(petName.length()-1); //adding double letters
+                        i++;
+                        }
                     } else {
-                        petName += "" + CONSONANTS.charAt(r.nextInt(21)) + VOWELS.charAt(r.nextInt(5));
+                        petName += "" + CONSONANTS.charAt(r.nextInt(21));
+                        if (r.nextInt(2)==0) {
+                            petName += "" + petName.charAt(petName.length()-1); //adding double letters
+                        i++;
+                        }
+                        petName += "" + VOWELS.charAt(r.nextInt(5));
+                        if (r.nextInt(2)==0) {
+                            petName += "" + petName.charAt(petName.length()-1); //adding double letters
+                        i++;
+                        }
+
                     }
                 } //end for loop
             } //end if
+            namedPet = true;
             System.out.println("Your pet, named " + petName + ", has been born!");
+        } //end if
+        
+        //Part 5: generate pet stats for named pets
+        if (namedPet == true) {
+            maxHealth = r.nextInt(STARTING_POOL) + 1;
+            remainingPool = STARTING_POOL - maxHealth;
+            maxFood = r.nextInt(remainingPool) + 1;
+            remainingPool -= maxFood;
+            maxEnergy = remainingPool;
+            
+            System.out.println("MAXHEALTH = " + maxHealth + " MAXFOOD = " + maxFood + " MAXENERGY = " + maxEnergy);
         }
+        
         
     }
     
