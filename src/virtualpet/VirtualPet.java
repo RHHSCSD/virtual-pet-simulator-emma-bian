@@ -195,7 +195,7 @@ public class VirtualPet {
                     } else if (gameChoice == 2) { //matching game
                         //suffle letters
                         for (int i=0;i<10;i++) {
-                            int ind = r.nextInt(10);
+                            int ind = r.nextInt(unshuffled.length());
                             shuffled += ""+ unshuffled.charAt(ind);
                             unshuffled = unshuffled.substring(0,ind) + unshuffled.substring(ind+1);
                         }
@@ -227,6 +227,5 @@ public class VirtualPet {
         
     } //end main method
     
-    public static 
     
 }
