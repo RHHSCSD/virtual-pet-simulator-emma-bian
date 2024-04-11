@@ -194,19 +194,15 @@ public class VirtualPet {
                     
                     } else if (gameChoice == 2) { //matching game
                         //suffle letters
-                        for (int i=0;i<10;i++) {
-                            int ind = r.nextInt(unshuffled.length());
-                            shuffled += ""+ unshuffled.charAt(ind);
-                            unshuffled = unshuffled.substring(0,ind) + unshuffled.substring(ind+1);
-                        }
-                                                
+                        shuffled = suffleString(unshuffled);
+                        
                         //reveal letters as player guesses
                         do {
                             System.out.println(revealed);
                             System.out.print("Guess (a b): ");
                             int guess1 = kb.nextInt();
                             int guess2 = kb.nextInt();
-                            if (shuffled.charAt(guess1) == shuffled.charAt(guess2)) {
+                            if ((guess1 < 9 && guess2 < 9) && (shuffled.charAt(guess1) == shuffled.charAt(guess2))) {
                                 revealed = revealed.substring(0,guess1)
                                         + shuffled.charAt(guess1)
                                         + revealed.substring(guess1+1,guess2)
@@ -227,5 +223,17 @@ public class VirtualPet {
         
     } //end main method
     
-    
+    public static String suffleString(String unshuffled) {
+        Random r = new Random();
+        String shuffled = "";
+        for (int i=0;i<10;i++) {
+            int ind = r.nextInt(unshuffled.length());
+            shuffled += ""+ unshuffled.charAt(ind);
+            unshuffled = unshuffled.substring(0,ind) + unshuffled.substring(ind+1);
+        }
+        return shuffled;
+        
+    }
+
+   
 }
