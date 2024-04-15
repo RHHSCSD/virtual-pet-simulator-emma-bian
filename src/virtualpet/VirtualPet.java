@@ -127,7 +127,7 @@ public class VirtualPet {
                         
                     } else if (gameChoice == 2) { //matching game
                         //suffle letters
-                        shuffled = suffleString(unshuffled);
+                        shuffled = shuffleString(unshuffled);
                         
                         //reveal letters as player guesses
                         do {
@@ -166,7 +166,7 @@ public class VirtualPet {
         System.out.println(" / // // //  `-._,_)' // / ``--...____..-' /// / //");
         System.out.println("\nComputerized Companions");
 
-    }
+    } //end printSplashScreen method
     
     //****************************************
     
@@ -175,7 +175,7 @@ public class VirtualPet {
         System.out.println("1. Start");
         System.out.println("2. Instructions");
         System.out.println("3. Exit");
-    }
+    } //end printMenuA method
     
     //****************************************
     
@@ -184,7 +184,7 @@ public class VirtualPet {
         System.out.println("1. Play/Interact");
         System.out.println("2. Instructions");
         System.out.println("3. Exit");
-    }
+    } //end printMenuB method
     
     //****************************************
     
@@ -193,7 +193,7 @@ public class VirtualPet {
         System.out.println("Cat");
         System.out.println("Fish");
         System.out.println("Rabbit");
-    }
+    } //end printPetSelection method
     
     //****************************************
     
@@ -232,7 +232,7 @@ public class VirtualPet {
             }
         } //end for loop
         return petName;
-    }
+    } //end generatePetName method
     
     //****************************************
     
@@ -249,7 +249,7 @@ public class VirtualPet {
         maxEnergy = remainingPool;
 
         System.out.println("MAXHEALTH = " + maxHealth + " MAXFOOD = " + maxFood + " MAXENERGY = " + maxEnergy);
-    }
+    } //end generateStats method
     
     //****************************************
     
@@ -276,9 +276,11 @@ public class VirtualPet {
             System.out.println("Money: " + moneyGame1);
             
             return moneyGame1;
-    }
+    } //end game1 method
     
-    public static String suffleString(String unshuffled) {
+    //****************************************
+    
+    public static String shuffleString(String unshuffled) {
         Random r = new Random();
         String shuffled = "";
         for (int i=0;i<10;i++) {
@@ -288,9 +290,9 @@ public class VirtualPet {
         }
         return shuffled;
         
-    }
+    } //end shuffleString method
     
+    //****************************************
     
-
    
 }
