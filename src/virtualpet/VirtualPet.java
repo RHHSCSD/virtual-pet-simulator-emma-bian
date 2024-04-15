@@ -231,6 +231,7 @@ public class VirtualPet {
 
             }
         } //end for loop
+        
         return petName;
     } //end generatePetName method
     
@@ -272,6 +273,7 @@ public class VirtualPet {
                     System.out.println("Out of guesses! End of game.");
                 } //end if
             } //end loop
+            
             System.out.println("The target number was " + targetNum);
             System.out.println("Money: " + moneyGame1);
             
@@ -283,6 +285,7 @@ public class VirtualPet {
     public static String shuffleString(String unshuffled) {
         Random r = new Random();
         String shuffled = "";
+        
         for (int i=0;i<10;i++) {
             int ind = r.nextInt(unshuffled.length());
             shuffled += ""+ unshuffled.charAt(ind);
