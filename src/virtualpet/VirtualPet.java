@@ -22,19 +22,13 @@ public class VirtualPet {
         //CONSTANTS
         final String USERNAME = "snoopy";
         final String PASSWORD = "toto";
-        final int NAME_LENGTH = (r.nextInt(5)+4);
-        final String VOWELS = "aeiou";
-        final String CONSONANTS = "bcdfghjklmnpqrstvwxyz";
-        final int STARTING_POOL = 20;
-        
+                
         //Variable initialization
         String menuSelection = "", menuSelection2 = "";
         String userUsername = "", userPass = "";
         boolean chosenPet = false;
         String petName = "";
         boolean namedPet = false;
-        int maxHealth, maxFood, maxEnergy;
-        int remainingPool;
         boolean playGame = false;
         int gameChoice;
         int money = 0;
@@ -43,12 +37,7 @@ public class VirtualPet {
         String revealed = "XXXXXXXXXX";
         
         //Part 1: print splash screen
-        System.out.println("           __..--''``---....___   _..._    __");
-        System.out.println(" /// //_.-'    .-/\";  `        ``<._  ``.''_ `. / // /");
-        System.out.println("///_.-' _..--.'_    \\                    `( ) ) // //");
-        System.out.println("/ (_..-' // (< _     ;_..__               ; `' / ///");
-        System.out.println(" / // // //  `-._,_)' // / ``--...____..-' /// / //");
-        System.out.println("\nComputerized Companions");
+        printSplashScreen();
         
         //Part 3: read user login; Part 5: give 3 chances
         for (int i=0;i<3;i++) {
@@ -69,18 +58,12 @@ public class VirtualPet {
         //Part 1: print menu
         while (true) {
             if (namedPet == false) {
-                System.out.println("\nMenu:");
-                System.out.println("1. Start");
-                System.out.println("2. Instructions");
-                System.out.println("3. Exit");
+                printMenuA();
                 //Read user selection
                 System.out.print("Select option (int or all lowercase word): ");
                 menuSelection = kb.next();
             } else {
-                System.out.println("\nMenu:");
-                System.out.println("1. Play/Interact");
-                System.out.println("2. Instructions");
-                System.out.println("3. Exit");
+                printMenuB();
                 //Read user selection
                 System.out.print("Select option (int or all lowercase word): ");
                 menuSelection2 = kb.next();
@@ -89,10 +72,7 @@ public class VirtualPet {
             //Part 2: make decisions based on input selection
             switch (menuSelection) {
                 case "1","start":
-                    System.out.println("Select a pet from the list: "); //Displays selection of pets
-                    System.out.println("Cat");
-                    System.out.println("Fish");
-                    System.out.println("Rabbit");
+                    printPetSelection();
                     System.out.print("Selection: ");
                     String pet = kb.next(); //Read user selection
                     System.out.println("You have selected " + pet); //Confirm selection
@@ -124,33 +104,7 @@ public class VirtualPet {
                     kb.nextLine(); //clear the return
                     petName = kb.nextLine();
                 } else if (userNamingChoice == 2) { //generate random name
-                    int startLetterIden = r.nextInt(2); //statring with consonant or vowel
-                    for (int i=0;i<NAME_LENGTH;i+=2) {
-                        if (startLetterIden == 0) {
-                            petName += "" + VOWELS.charAt(r.nextInt(5));
-                            if (r.nextInt(2)==0) {
-                                petName += "" + petName.charAt(petName.length()-1); //adding double letters
-                            i++;
-                            }
-                            petName += "" + CONSONANTS.charAt(r.nextInt(21));
-                            if (r.nextInt(2)==0) {
-                                petName += "" + petName.charAt(petName.length()-1); //adding double letters
-                            i++;
-                            }
-                        } else {
-                            petName += "" + CONSONANTS.charAt(r.nextInt(21));
-                            if (r.nextInt(2)==0) {
-                                petName += "" + petName.charAt(petName.length()-1); //adding double letters
-                            i++;
-                            }
-                            petName += "" + VOWELS.charAt(r.nextInt(5));
-                            if (r.nextInt(2)==0) {
-                                petName += "" + petName.charAt(petName.length()-1); //adding double letters
-                            i++;
-                            }
-
-                        }
-                    } //end for loop
+                    petName = generatePetName();
                 } //end if
                 namedPet = true;
                 System.out.println("Your pet, named " + petName + ", has been born!");
@@ -158,13 +112,7 @@ public class VirtualPet {
 
             //Part 5: generate pet stats for named pets
             if (namedPet == true && playGame == false) {
-                maxHealth = r.nextInt(STARTING_POOL) + 1;
-                remainingPool = STARTING_POOL - maxHealth;
-                maxFood = r.nextInt(remainingPool) + 1;
-                remainingPool -= maxFood;
-                maxEnergy = remainingPool;
-
-                System.out.println("MAXHEALTH = " + maxHealth + " MAXFOOD = " + maxFood + " MAXENERGY = " + maxEnergy);
+                generateStats();
             } //end if
             
             if (playGame == true) {
@@ -175,23 +123,8 @@ public class VirtualPet {
                     gameChoice = kb.nextInt();
                     
                     if (gameChoice == 1) { //number guessing game
-                        int targetNum = r.nextInt(100) + 1;
-                        for (int i=10;i>0;i-=2) {
-                            System.out.print("Guess: ");
-                            int userGuess = kb.nextInt();
-                            if (userGuess == targetNum) {
-                                System.out.println("Congrats! You got it!");
-                                money += i;
-                                break;
-                            } else if ((userGuess != targetNum) && (i != 2)) {
-                                System.out.println("Wrong number, try again!");
-                            } else if ((userGuess != targetNum) && (i == 2)) {
-                                System.out.println("Out of guesses! End of game.");
-                            } //end if
-                        } //end loop
-                        System.out.println("The target number was " + targetNum);
-                        System.out.println("Money: " + money);
-                    
+                        money += game1();
+                        
                     } else if (gameChoice == 2) { //matching game
                         //suffle letters
                         shuffled = suffleString(unshuffled);
@@ -223,6 +156,128 @@ public class VirtualPet {
         
     } //end main method
     
+    //****************************************
+    
+    public static void printSplashScreen() {
+        System.out.println("           __..--''``---....___   _..._    __");
+        System.out.println(" /// //_.-'    .-/\";  `        ``<._  ``.''_ `. / // /");
+        System.out.println("///_.-' _..--.'_    \\                    `( ) ) // //");
+        System.out.println("/ (_..-' // (< _     ;_..__               ; `' / ///");
+        System.out.println(" / // // //  `-._,_)' // / ``--...____..-' /// / //");
+        System.out.println("\nComputerized Companions");
+
+    }
+    
+    //****************************************
+    
+    public static void printMenuA() {
+        System.out.println("\nMenu:");
+        System.out.println("1. Start");
+        System.out.println("2. Instructions");
+        System.out.println("3. Exit");
+    }
+    
+    //****************************************
+    
+    public static void printMenuB() {
+        System.out.println("\nMenu:");
+        System.out.println("1. Play/Interact");
+        System.out.println("2. Instructions");
+        System.out.println("3. Exit");
+    }
+    
+    //****************************************
+    
+    public static void printPetSelection() {
+        System.out.println("Select a pet from the list: "); //Displays selection of pets
+        System.out.println("Cat");
+        System.out.println("Fish");
+        System.out.println("Rabbit");
+    }
+    
+    //****************************************
+    
+    public static String generatePetName() {
+        Random r = new Random();
+        final int NAME_LENGTH = (r.nextInt(5)+4);
+        final String VOWELS = "aeiou";
+        final String CONSONANTS = "bcdfghjklmnpqrstvwxyz";
+        String petName = "";
+        
+        int startLetterIden = r.nextInt(2); //statring with consonant or vowel
+        for (int i=0;i<NAME_LENGTH;i+=2) {
+            if (startLetterIden == 0) {
+                petName += "" + VOWELS.charAt(r.nextInt(5));
+                if (r.nextInt(2)==0) {
+                    petName += "" + petName.charAt(petName.length()-1); //adding double letters
+                i++;
+                }
+                petName += "" + CONSONANTS.charAt(r.nextInt(21));
+                if (r.nextInt(2)==0) {
+                    petName += "" + petName.charAt(petName.length()-1); //adding double letters
+                i++;
+                }
+            } else {
+                petName += "" + CONSONANTS.charAt(r.nextInt(21));
+                if (r.nextInt(2)==0) {
+                    petName += "" + petName.charAt(petName.length()-1); //adding double letters
+                i++;
+                }
+                petName += "" + VOWELS.charAt(r.nextInt(5));
+                if (r.nextInt(2)==0) {
+                    petName += "" + petName.charAt(petName.length()-1); //adding double letters
+                i++;
+                }
+
+            }
+        } //end for loop
+        return petName;
+    }
+    
+    //****************************************
+    
+    public static void generateStats() {
+        Random r = new Random();
+        final int STARTING_POOL = 20;
+        int maxHealth, maxFood, maxEnergy;
+        int remainingPool;
+        
+        maxHealth = r.nextInt(STARTING_POOL) + 1;
+        remainingPool = STARTING_POOL - maxHealth;
+        maxFood = r.nextInt(remainingPool) + 1;
+        remainingPool -= maxFood;
+        maxEnergy = remainingPool;
+
+        System.out.println("MAXHEALTH = " + maxHealth + " MAXFOOD = " + maxFood + " MAXENERGY = " + maxEnergy);
+    }
+    
+    //****************************************
+    
+    public static int game1() {
+        Scanner kb = new Scanner(System.in);
+        Random r = new Random();
+        int moneyGame1 = 0;
+        
+        int targetNum = r.nextInt(100) + 1;
+            for (int i=10;i>0;i-=2) {
+                System.out.print("Guess: ");
+                int userGuess = kb.nextInt();
+                if (userGuess == targetNum) {
+                    System.out.println("Congrats! You got it!");
+                    moneyGame1 += i;
+                    break;
+                } else if ((userGuess != targetNum) && (i != 2)) {
+                    System.out.println("Wrong number, try again!");
+                } else if ((userGuess != targetNum) && (i == 2)) {
+                    System.out.println("Out of guesses! End of game.");
+                } //end if
+            } //end loop
+            System.out.println("The target number was " + targetNum);
+            System.out.println("Money: " + moneyGame1);
+            
+            return moneyGame1;
+    }
+    
     public static String suffleString(String unshuffled) {
         Random r = new Random();
         String shuffled = "";
@@ -234,6 +289,8 @@ public class VirtualPet {
         return shuffled;
         
     }
+    
+    
 
    
 }
