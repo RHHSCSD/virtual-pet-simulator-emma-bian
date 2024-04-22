@@ -31,6 +31,8 @@ public class VirtualPet {
         boolean namedPet = false;
         boolean playGame = false;
         int gameChoice;
+        int[] maxStats = new int[3]; //maxHealth, maxFood, maxEnergy
+        int[] currentStats = new int[3]; //currentHealth, currentFood, currentEnergy
         int money = 0;
         String unshuffled = "AABBCCDDEE";
         String shuffled = "";
@@ -112,7 +114,7 @@ public class VirtualPet {
 
             //Part 5: generate pet stats for named pets
             if (namedPet == true && playGame == false) {
-                generateStats();
+                maxStats = generateStats();
             } //end if
             
             if (playGame == true) {
@@ -151,8 +153,36 @@ public class VirtualPet {
                 } while (gameChoice != -1);
             } //end if
 
+            //Earning Money
+        System.out.print("Pet interaction? (y/n): ");
+        if ((kb.next()).equalsIgnoreCase("y")) {
+            System.out.println("1. Play with your pet");
+            System.out.println("2. Feeding your pet");
+            System.out.println("3. Grooming your pet");
+            System.out.print("Selection (1/2/3): ");
+            
+            int selectPetInteraction = kb.nextInt();
+            if (selectPetInteraction == 1) {
+                System.out.println("Toy............$1.00");
+                money--;
+                currentStats[2]++;
+                System.out.println("Money: " + money);
+                System.out.println("Current energy: " + currentStats[2]);
+            } else if (selectPetInteraction == 2) {
+                System.out.println("Food............$1.00");
+                money--;
+                currentStats[1]++;
+                System.out.println("Money: " + money);
+            } else if (selectPetInteraction == 3) {
+                System.out.println("Groom............$1.00");
+                money--;
+                currentStats[0]++;
+                System.out.println("Money: " + money);
+            }
+        }
+        
         } //end loop
-
+        
         
     } //end main method
     
@@ -189,7 +219,7 @@ public class VirtualPet {
     //****************************************
     
     public static void printPetSelection() {
-        System.out.println("Select a pet from the list: "); //Displays selection of pets
+        System.out.println("\nSelect a pet from the list: "); //Displays selection of pets
         System.out.println("Cat");
         System.out.println("Fish");
         System.out.println("Rabbit");
@@ -237,11 +267,13 @@ public class VirtualPet {
     
     //****************************************
     
-    public static void generateStats() {
+    public static int[] generateStats() {
         Random r = new Random();
         final int STARTING_POOL = 20;
         int maxHealth, maxFood, maxEnergy;
         int remainingPool;
+        
+        int[] maxStats = new int[3];
         
         maxHealth = r.nextInt(STARTING_POOL) + 1;
         remainingPool = STARTING_POOL - maxHealth;
@@ -250,6 +282,12 @@ public class VirtualPet {
         maxEnergy = remainingPool;
 
         System.out.println("MAXHEALTH = " + maxHealth + " MAXFOOD = " + maxFood + " MAXENERGY = " + maxEnergy);
+        
+        maxStats[0] = maxHealth;
+        maxStats[1] = maxFood;
+        maxStats[2] = maxEnergy;
+        
+        return maxStats;
     } //end generateStats method
     
     //****************************************
