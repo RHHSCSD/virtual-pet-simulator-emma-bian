@@ -4,6 +4,8 @@
  */
 package virtualpet;
 import java.util.*;
+import java.io.*;
+
 /**
  * Program: Virtual Pet Generator
  * @author Emma Bian
@@ -17,18 +19,17 @@ public class VirtualPet {
     public static void main(String[] args) {
         Scanner kb = new Scanner(System.in);
         Random r = new Random();
+        
         // TODO code application logic here
         
         //CONSTANTS
-        final String USERNAME = "snoopy";
-        final String PASSWORD = "toto";
+        
                 
         //Variable initialization
         String menuSelection = "", menuSelection2 = "";
-        String userUsername = "", userPass = "";
-        boolean chosenPet = false;
+        String username = "", password = "";
+        String petType = "";
         String petName = "";
-        boolean namedPet = false;
         boolean playGame = false;
         int gameChoice;
         int[] maxStats = new int[3]; //maxHealth, maxFood, maxEnergy
@@ -37,55 +38,67 @@ public class VirtualPet {
         String unshuffled = "AABBCCDDEE";
         String shuffled = "";
         String revealed = "XXXXXXXXXX";
+        boolean end = false;
         
         //Part 1: print splash screen
         printSplashScreen();
         
-        //Part 3: read user login; Part 5: give 3 chances
-        for (int i=0;i<3;i++) {
-            System.out.print("Enter username: ");
-            userUsername = kb.nextLine();
-            System.out.print("Enter password: ");
-            userPass = kb.nextLine();
-            if (userUsername.equals(USERNAME) && userPass.equals(PASSWORD)) {
-                break;
-            }
-        }
-        
+        //Part 3: read user login
+        System.out.print("Enter username: ");
+        username = kb.nextLine();
+        System.out.print("Enter password: ");
+        password = kb.nextLine();
+                    
         //Part 3: determine if the login matches
-        if (!(userUsername.equals(USERNAME)) || !(userPass.equals(PASSWORD))) { 
-            System.exit(0);
-        }
+        String fileName = username + ".txt";
+        File f = new File(fileName);
+        PrintWriter pw = null;
         
-        //Part 1: print menu
-        while (true) {
-            if (namedPet == false) {
-                printMenuA();
-                //Read user selection
-                System.out.print("Select option (int or all lowercase word): ");
-                menuSelection = kb.next();
-            } else {
-                printMenuB();
-                //Read user selection
-                System.out.print("Select option (int or all lowercase word): ");
-                menuSelection2 = kb.next();
-            }
-
+        //if the user is a new user
+        if (!f.exists()) {
+            
+            //Part 1: print menu
+            printMenuA();
+            //Read user selection
+            System.out.print("Select option (int or all lowercase word): ");
+            menuSelection = kb.next();
+            
             //Part 2: make decisions based on input selection
             switch (menuSelection) {
                 case "1","start":
                     printPetSelection();
                     System.out.print("Selection: ");
-                    String pet = kb.next(); //Read user selection
-                    System.out.println("You have selected " + pet); //Confirm selection
-                    chosenPet = true;
-                    menuSelection = "";
+                    petType = kb.next(); //Read user selection
+                    System.out.println("You have selected " + petType); //Confirm selection
                     break;
-                case "2", "instructions": menuSelection = ""; break;
-                case "3", "exit": menuSelection = ""; System.exit(0); break; //Ends the program
+                case "2", "instructions": break;
+                case "3", "exit": end = true; break; //Ends the program
                 default: break;
             } //end switch case
+
+            //Part 4: read or generate pet name
+            System.out.print("Type in a name (1) or generate random name (2): ");
+            int userNamingChoice = kb.nextInt();
+            if (userNamingChoice == 1) { //allow user input name
+                System.out.print("Enter pet name: ");
+                kb.nextLine(); //clear the return
+                petName = kb.nextLine();
+            } else if (userNamingChoice == 2) { //generate random name
+                petName = generatePetName();
+            } //end if
+            System.out.println("Your pet, named " + petName + ", has been born!");
+
+            //Part 5: generate pet stats for named pets
+            maxStats = generateStats();
             
+        } //end if (for new users)
+        
+        while (end == false) {
+            
+            printMenuB();
+            //Read user selection
+            System.out.print("Select option (int or all lowercase word): ");
+            menuSelection2 = kb.next();
             
             //Part 5.2: print main menu
             switch (menuSelection2) {
@@ -93,29 +106,9 @@ public class VirtualPet {
                     playGame = true;
                     break;
                 case "2", "instructions": break;
-                case "3", "exit": System.exit(0); break; //Ends the program
+                case "3", "exit": end = true; break; //Ends the program
                 default: break;
             } //end switch case
-
-            //Part 4: read or generate pet name
-            if (chosenPet == true && namedPet == false) {
-                System.out.print("Type in a name (1) or generate random name (2): ");
-                int userNamingChoice = kb.nextInt();
-                if (userNamingChoice == 1) { //allow user input name
-                    System.out.print("Enter pet name: ");
-                    kb.nextLine(); //clear the return
-                    petName = kb.nextLine();
-                } else if (userNamingChoice == 2) { //generate random name
-                    petName = generatePetName();
-                } //end if
-                namedPet = true;
-                System.out.println("Your pet, named " + petName + ", has been born!");
-            } //end if
-
-            //Part 5: generate pet stats for named pets
-            if (namedPet == true && playGame == false) {
-                maxStats = generateStats();
-            } //end if
             
             if (playGame == true) {
                 do {
@@ -133,20 +126,7 @@ public class VirtualPet {
                         
                         //reveal letters as player guesses
                         do {
-                            System.out.println(revealed);
-                            System.out.print("Guess (a b): ");
-                            int guess1 = kb.nextInt();
-                            int guess2 = kb.nextInt();
-                            if ((guess1 < 9 && guess2 < 9) && (shuffled.charAt(guess1) == shuffled.charAt(guess2))) {
-                                revealed = revealed.substring(0,guess1)
-                                        + shuffled.charAt(guess1)
-                                        + revealed.substring(guess1+1,guess2)
-                                        + shuffled.charAt(guess2)
-                                        + revealed.substring(guess2+1);
-                                money++;
-                            } else {
-                                System.out.println("Try again!");
-                            }
+                            money += game2(revealed, shuffled);
                         } while (revealed.indexOf("X") != -1);
                         System.out.println("Money: " + money);
                     }
@@ -160,8 +140,8 @@ public class VirtualPet {
             System.out.println("2. Feeding your pet");
             System.out.println("3. Grooming your pet");
             System.out.print("Selection (1/2/3): ");
-            
             int selectPetInteraction = kb.nextInt();
+            
             if (selectPetInteraction == 1) {
                 System.out.println("Toy............$1.00");
                 money--;
@@ -183,6 +163,21 @@ public class VirtualPet {
         
         } //end loop
         
+        try {
+            pw = new PrintWriter(f);
+            
+            pw.println("Username: " + username);
+            pw.println("Password: " + password);
+            pw.println("Pet type: " + petType);
+            pw.println("Pet name: " + petName);
+            pw.println("Max stats: " + Arrays.toString(maxStats));
+            pw.println("Current stats: " + Arrays.toString(currentStats));
+            pw.println("Money: " + money);
+            
+            pw.close();
+        } catch (IOException e) {
+            System.out.println("IOException occured.");
+        }
         
     } //end main method
     
@@ -234,8 +229,8 @@ public class VirtualPet {
         final String CONSONANTS = "bcdfghjklmnpqrstvwxyz";
         String petName = "";
         
-        int startLetterIden = r.nextInt(2); //statring with consonant or vowel
-        for (int i=0;i<NAME_LENGTH;i+=2) {
+        int startLetterIden = r.nextInt(2); //determines if the starting letter is a consonant or vowel
+        for (int i=0;i<NAME_LENGTH;i+=2) { //loops through each letter and assigns a letter accordingly
             if (startLetterIden == 0) {
                 petName += "" + VOWELS.charAt(r.nextInt(5));
                 if (r.nextInt(2)==0) {
@@ -335,5 +330,25 @@ public class VirtualPet {
     
     //****************************************
     
-   
+    public static int game2 (String revealed, String shuffled) {
+        Scanner kb = new Scanner(System.in);
+        int moneyGame2 = 0;
+        
+        System.out.println(revealed);
+        System.out.print("Guess (a b): ");
+        int guess1 = kb.nextInt();
+        int guess2 = kb.nextInt();
+        if ((guess1 < 9 && guess2 < 9) && (shuffled.charAt(guess1) == shuffled.charAt(guess2))) {
+            revealed = revealed.substring(0,guess1)
+                    + shuffled.charAt(guess1)
+                    + revealed.substring(guess1+1,guess2)
+                    + shuffled.charAt(guess2)
+                    + revealed.substring(guess2+1);
+            moneyGame2++;
+        } else {
+            System.out.println("Try again!");
+        }
+        
+        return moneyGame2;
+    }
 }
