@@ -1,7 +1,7 @@
 Username: emma
 Password: password
-Pet type: cat
-Pet name: yeebbiggoo
-Max stats: [17, 3, 0]
-Current stats: [0, 1, 0]
+Pet type: 
+Pet name: 
+Max stats: [0, 0, 0]
+Current stats: [1, 0, 0]
 Money: -1

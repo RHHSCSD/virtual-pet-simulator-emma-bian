@@ -22,15 +22,15 @@ public class VirtualPet {
         
         // TODO code application logic here
         
-        //CONSTANTS
+        //Global variables
         
-                
+        
         //Variable initialization
         String menuSelection = "", menuSelection2 = "";
         String username = "", password = "";
         String petType = "";
         String petName = "";
-        boolean playGame = false;
+        int option = 0;
         int gameChoice;
         int[] maxStats = new int[3]; //maxHealth, maxFood, maxEnergy
         int[] currentStats = new int[3]; //currentHealth, currentFood, currentEnergy
@@ -72,7 +72,10 @@ public class VirtualPet {
                     System.out.println("You have selected " + petType); //Confirm selection
                     break;
                 case "2", "instructions": break;
-                case "3", "exit": end = true; break; //Ends the program
+                case "3", "exit": //Ends the program
+                    storeInFile(fileName, username, password, petType, petName, maxStats, currentStats, money);
+                    System.exit(0);
+                    break; 
                 default: break;
             } //end switch case
 
@@ -103,80 +106,77 @@ public class VirtualPet {
             //Part 5.2: print main menu
             switch (menuSelection2) {
                 case "1","play","interact":
-                    playGame = true;
+                    option = 1;
                     break;
-                case "2", "instructions": break;
-                case "3", "exit": end = true; break; //Ends the program
+                case "2", "instructions":
+                    option = 2;
+                    break;
+                case "3", "exit": //Ends the program
+                    storeInFile(fileName, username, password, petType, petName, maxStats, currentStats, money);
+                    System.exit(0);
+                    break;
                 default: break;
             } //end switch case
             
-            if (playGame == true) {
-                do {
-                    System.out.println("Game 1: Number Guessing Game");
-                    System.out.println("Game 2: Matching Game");
-                    System.out.print("Selection (1 or 2, -1 to quit): ");
-                    gameChoice = kb.nextInt();
+            if (option == 1) {
+                System.out.print("Do you want to play games (1) or interact with you pet (2): ");
+                int playInteract = kb.nextInt();
+                
+                //play games and earn money
+                if (playInteract == 1) {
+                    do {
+                        System.out.println("Game 1: Number Guessing Game");
+                        System.out.println("Game 2: Matching Game");
+                        System.out.print("Selection (1 or 2, -1 to quit): ");
+                        gameChoice = kb.nextInt();
+
+                        if (gameChoice == 1) { //number guessing game
+                            money += game1();
+
+                        } else if (gameChoice == 2) { //matching game
+                            //suffle letters
+                            shuffled = shuffleString(unshuffled);
+
+                            //reveal letters as player guesses
+                            do {
+                                money += game2(revealed, shuffled);
+                            } while (revealed.indexOf("X") != -1);
+                            System.out.println("Money: " + money);
+                        }
+                    } while (gameChoice != -1);
                     
-                    if (gameChoice == 1) { //number guessing game
-                        money += game1();
-                        
-                    } else if (gameChoice == 2) { //matching game
-                        //suffle letters
-                        shuffled = shuffleString(unshuffled);
-                        
-                        //reveal letters as player guesses
-                        do {
-                            money += game2(revealed, shuffled);
-                        } while (revealed.indexOf("X") != -1);
+                //interact with pet
+                } else if (playInteract == 2) {
+                    System.out.println("1. Play with your pet");
+                    System.out.println("2. Feeding your pet");
+                    System.out.println("3. Grooming your pet");
+                    System.out.print("Selection (1/2/3): ");
+                    int selectPetInteraction = kb.nextInt();
+
+                    if (selectPetInteraction == 1) {
+                        System.out.println("Toy............$1.00");
+                        money--;
+                        currentStats[2]++;
+                        System.out.println("Money: " + money);
+                        System.out.println("Current energy: " + currentStats[2]);
+                    } else if (selectPetInteraction == 2) {
+                        System.out.println("Food............$1.00");
+                        money--;
+                        currentStats[1]++;
+                        System.out.println("Money: " + money);
+                    } else if (selectPetInteraction == 3) {
+                        System.out.println("Groom............$1.00");
+                        money--;
+                        currentStats[0]++;
                         System.out.println("Money: " + money);
                     }
-                } while (gameChoice != -1);
-            } //end if
 
-            //Earning Money
-        System.out.print("Pet interaction? (y/n): ");
-        if ((kb.next()).equalsIgnoreCase("y")) {
-            System.out.println("1. Play with your pet");
-            System.out.println("2. Feeding your pet");
-            System.out.println("3. Grooming your pet");
-            System.out.print("Selection (1/2/3): ");
-            int selectPetInteraction = kb.nextInt();
+                }
+                
+            } //end if
             
-            if (selectPetInteraction == 1) {
-                System.out.println("Toy............$1.00");
-                money--;
-                currentStats[2]++;
-                System.out.println("Money: " + money);
-                System.out.println("Current energy: " + currentStats[2]);
-            } else if (selectPetInteraction == 2) {
-                System.out.println("Food............$1.00");
-                money--;
-                currentStats[1]++;
-                System.out.println("Money: " + money);
-            } else if (selectPetInteraction == 3) {
-                System.out.println("Groom............$1.00");
-                money--;
-                currentStats[0]++;
-                System.out.println("Money: " + money);
-            }
-        }
-        
-        } //end loop
-        
-        try {
-            pw = new PrintWriter(f);
-            
-            pw.println("Username: " + username);
-            pw.println("Password: " + password);
-            pw.println("Pet type: " + petType);
-            pw.println("Pet name: " + petName);
-            pw.println("Max stats: " + Arrays.toString(maxStats));
-            pw.println("Current stats: " + Arrays.toString(currentStats));
-            pw.println("Money: " + money);
-            
-            pw.close();
-        } catch (IOException e) {
-            System.out.println("IOException occured.");
+            //reset option
+            option = 0;
         }
         
     } //end main method
@@ -350,5 +350,26 @@ public class VirtualPet {
         }
         
         return moneyGame2;
-    }
+    } //end game2 method
+    
+    public static void storeInFile(String fileName, String username, String password, String petType, String petName, int[] maxStats, int[] currentStats, int money) {
+        File f = new File(fileName);
+        PrintWriter pw = null;
+
+        try {
+            pw = new PrintWriter(f);
+            
+            pw.println("Username: " + username);
+            pw.println("Password: " + password);
+            pw.println("Pet type: " + petType);
+            pw.println("Pet name: " + petName);
+            pw.println("Max stats: " + Arrays.toString(maxStats));
+            pw.println("Current stats: " + Arrays.toString(currentStats));
+            pw.println("Money: " + money);
+            
+            pw.close();
+        } catch (IOException e) {
+            System.out.println("IOException occured.");
+        }
+    } //end storeInFile method
 }
