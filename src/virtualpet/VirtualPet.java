@@ -138,9 +138,8 @@ public class VirtualPet {
                             shuffled = shuffleString(unshuffled);
 
                             //reveal letters as player guesses
-                            do {
-                                money += game2(revealed, shuffled);
-                            } while (revealed.indexOf("X") != -1);
+                            money += game2(revealed, shuffled);
+                            
                             System.out.println("Money: " + money);
                         }
                     } while (gameChoice != -1);
@@ -324,6 +323,7 @@ public class VirtualPet {
             shuffled += ""+ unshuffled.charAt(ind);
             unshuffled = unshuffled.substring(0,ind) + unshuffled.substring(ind+1);
         }
+        
         return shuffled;
         
     } //end shuffleString method
@@ -333,22 +333,24 @@ public class VirtualPet {
     public static int game2 (String revealed, String shuffled) {
         Scanner kb = new Scanner(System.in);
         int moneyGame2 = 0;
-        
-        System.out.println(revealed);
-        System.out.print("Guess (a b): ");
-        int guess1 = kb.nextInt();
-        int guess2 = kb.nextInt();
-        if ((guess1 < 9 && guess2 < 9) && (shuffled.charAt(guess1) == shuffled.charAt(guess2))) {
-            revealed = revealed.substring(0,guess1)
-                    + shuffled.charAt(guess1)
-                    + revealed.substring(guess1+1,guess2)
-                    + shuffled.charAt(guess2)
-                    + revealed.substring(guess2+1);
-            moneyGame2++;
-        } else {
-            System.out.println("Try again!");
-        }
-        
+        do {
+            System.out.println(revealed);
+            System.out.print("Guess (a b): ");
+            int guess1 = kb.nextInt();
+            int guess2 = kb.nextInt();
+            if ((guess1 < 10 && guess2 < 10) && (shuffled.charAt(guess1) == shuffled.charAt(guess2))) {
+                revealed = revealed.substring(0,guess1)
+                           + shuffled.charAt(guess1)
+                           + revealed.substring(guess1+1,guess2)
+                           + shuffled.charAt(guess2)
+                           + revealed.substring(guess2+1);
+                moneyGame2++;
+            } else {
+                System.out.println("Try again!");
+            }
+
+        } while (revealed.indexOf("X") != -1);
+                
         return moneyGame2;
     } //end game2 method
     
