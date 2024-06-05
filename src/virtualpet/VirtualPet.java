@@ -34,6 +34,7 @@ public class VirtualPet {
         int gameChoice;
         int[] maxStats = new int[3]; //maxHealth, maxFood, maxEnergy
         int[] currentStats = new int[3]; //currentHealth, currentFood, currentEnergy
+        int[] statsChanged = {0,0,0}; //num times groomed, num times fed, num times played with
         int money = 0;
         String unshuffled = "AABBCCDDEE";
         String shuffled = "";
@@ -74,6 +75,10 @@ public class VirtualPet {
                 case "2", "instructions": break;
                 case "3", "exit": //Ends the program
                     storeInFile(fileName, username, password, petType, petName, maxStats, currentStats, money);
+                    //display number of times the pet has been interacted with
+                    System.out.println("Played with pet: " + statsChanged[2] + " time(s)");
+                    System.out.println("Fed pet: " + statsChanged[1] + " time(s)");
+                    System.out.println("Groomed pet: " + statsChanged[0] + " time(s)");
                     System.exit(0);
                     break; 
                 default: break;
@@ -113,6 +118,10 @@ public class VirtualPet {
                     break;
                 case "3", "exit": //Ends the program
                     storeInFile(fileName, username, password, petType, petName, maxStats, currentStats, money);
+                    //display number of times the pet has been interacted with
+                    System.out.println("Played with pet: " + statsChanged[2] + " time(s)");
+                    System.out.println("Fed pet: " + statsChanged[1] + " time(s)");
+                    System.out.println("Groomed pet: " + statsChanged[0] + " time(s)");
                     System.exit(0);
                     break;
                 default: break;
@@ -156,17 +165,20 @@ public class VirtualPet {
                         System.out.println("Toy............$1.00");
                         money--;
                         currentStats[2]++;
+                        statsChanged[2]++;
                         System.out.println("Money: " + money);
                         System.out.println("Current energy: " + currentStats[2]);
                     } else if (selectPetInteraction == 2) {
                         System.out.println("Food............$1.00");
                         money--;
                         currentStats[1]++;
+                        statsChanged[1]++;
                         System.out.println("Money: " + money);
                     } else if (selectPetInteraction == 3) {
                         System.out.println("Groom............$1.00");
                         money--;
                         currentStats[0]++;
+                        statsChanged[0]++;
                         System.out.println("Money: " + money);
                     }
 

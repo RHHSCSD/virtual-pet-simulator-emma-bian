@@ -3,5 +3,5 @@ Password: password
 Pet type: 
 Pet name: 
 Max stats: [0, 0, 0]
-Current stats: [1, 0, 0]
-Money: -1
+Current stats: [0, 0, 0]
+Money: 0
